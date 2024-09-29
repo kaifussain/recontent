@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="styles/home.css">
+
+    <!-- scripts -->
+    <script src="scripts/main.js" defer></script>
+    <script src="scripts/loaders.js" defer></script>
+    <script src="scripts/home.js" defer></script>
+
+    <!-- <script src="scripts/_animation.js" defer></script> -->
+
+
+    <!-- google font for 'recontent' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat+Subrayada:wght@400;700&family=Poiret+One&display=swap"
+        rel="stylesheet">
+
+
+
+    <link rel="icon" href="./assets/logo.ico" type="image/x-icon">
+    <title>recontent</title>
+</head>
+
+<body>
+
+
+    <!-- background -->
+    <canvas id="neuro"></canvas>
+    <script type="x-shader/x-fragment" id="vertShader">
+        precision mediump float;
+    
+        varying vec2 vUv;
+        attribute vec2 a_position;
+    
+        void main() {
+            vUv = .4 * (a_position + 1.);
+            gl_Position = vec4(a_position, 0.0, 1.0);
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="fragShader">
+        precision mediump float;
+    
+        varying vec2 vUv;
+        uniform float u_time;
+        uniform float u_ratio;
+        uniform vec2 u_pointer_position;
+        uniform float u_scroll_progress;
+    
+        vec2 rotate(vec2 uv, float th) {
+            return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
+        }
+    
+        float neuro_shape(vec2 uv, float t, float p) {
+            vec2 sine_acc = vec2(0.);
+            vec2 res = vec2(0.);
+            float scale = 9.;
+    
+            for (int j = 0; j < 15; j++) {
+                uv = rotate(uv, 1.);
+                sine_acc = rotate(sine_acc, 1.);
+                vec2 layer = uv * scale + float(j) + sine_acc - t;
+                sine_acc += sin(layer);
+                res += (.5 + .5 * cos(layer)) / scale;
+                scale *= (1.2 - .07 * p);
+            }
+            return res.x + res.y;
+        }
+    
+        void main() {
+            vec2 uv = .6 * vUv;
+            uv.x *= u_ratio;
+    
+            vec2 pointer = vUv - u_pointer_position;
+            pointer.x *= u_ratio;
+            float p = clamp(length(pointer), 0., 1.);
+            p = .5 * pow(1. - p, 2.);
+    
+            float t = .001 * u_time;
+            vec3 color = vec3(6.);
+    
+            float noise = neuro_shape(uv, t, p);
+    
+            noise = 1.1 * pow(noise, 2.);
+            noise += pow(noise, 9.);
+            noise = max(.0, noise - .4);
+            noise *= (1. - length(vUv - .7));
+    
+            color = normalize(vec3(.1, .0 + .3 * cos(2. * u_scroll_progress), .5 + .5 * sin(1. * u_scroll_progress)));
+    
+            color = color * noise;
+    
+            gl_FragColor = vec4(color, noise);
+        }
+    </script>
+
+
+
+    <div id="header-container"></div>
+
+    <div id="home-intro">
+        <!-- <div class="home-intro-logo">
+            <img src="./assets/logo.png" class="home-logo">
+            <h1 id="app-name">recontent</h1>
+        </div> -->
+        <!-- <img src="./assets/logo2.png" class="home-logo2"> -->
+        <p>
+            A Machine Learning-Based Hybrid Content Recommendation Platform for Diverse Digital Experiences
+        </p>
+    </div>
+    <button id="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+
+</body>
+
+</html>
