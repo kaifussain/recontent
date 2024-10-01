@@ -1,12 +1,13 @@
 const toggleButton = document.getElementById("theme-toggle");
 
-document.addEventListener("DOMContentLoaded", setTheme);
+// document.addEventListener("DOMContentLoaded", setTheme);
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(setTheme, 100);
+});
 
 function setTheme() {
   const currentTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", currentTheme);
-
-  document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background');
 }
 
 function toggleTheme() {
@@ -21,6 +22,4 @@ function toggleTheme() {
   // Save the user's choice in localStorage
   localStorage.setItem("theme", newTheme);
 
-  // Force a repaint to apply the background color
-  document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background');
 }
