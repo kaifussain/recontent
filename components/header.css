@@ -5,14 +5,10 @@
     align-items: center;
     padding:.5rem 1rem;
     background-color: var(--semi-trans);
-    /* background-color: var(--background); */
-    font-family: "Poiret One", sans-serif;
-    font-weight: 700;
 }
 
 .header-hamberger{
     font-size: 2rem;
-    /* border:2px solid yellow; */
 }
 
 .header-logo-container{
@@ -23,7 +19,6 @@
 .header-app-logo{
     width: 4.5rem;
     height: 2.5rem;
-    /* border:2px solid yellow; */
     object-fit: cover;
     filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.51));
     background-color: transparent;
@@ -33,12 +28,10 @@
 
 
 .header-app-name{
-    /* border:2px solid yellow; */
     font-family: "Poiret One", sans-serif;
     font-weight: 900;
     font-style: normal;
     font-size: 1.8rem;
-    /* margin-bottom: 2rem; */
     padding-bottom: .4rem;
     margin:0;
     margin-left: 1rem;

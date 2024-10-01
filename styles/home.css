@@ -1,3 +1,45 @@
-#home-intro{
-    padding:0 5vw;
+#home-intro {
+  padding: 0 5vw;
+  /* background-color: rgba(0, 255, 255, 0.232); */
+  height:calc(100vh - 3.5rem);
+}
+
+.home-intro-tagline {
+  padding:10rem 0;
+  font-family: "Hi Melody", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 6vw;
+
+  width: 100%;
+  animation: typing 1.4s steps(40), 0.5s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  
+}
+.home-intro-tagline-highlight {
+  text-shadow: 0 0 3px var(--shadow);
+  color: var(--hightlight);
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+    color: var(--hightlight);
+    filter: blur(1.6px);
+  }
+}
+
+.home-intro-description {
+ font-size: max(1.7vw,1rem);
+}
+
+/* background effect */
+canvas#neuro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0.95;
 }

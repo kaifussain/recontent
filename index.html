@@ -28,6 +28,25 @@
 
 
 
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Hi+Melody&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Qwitcher+Grypen:wght@400;700&display=swap" rel="stylesheet">
+        
+        
+        
+        
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Hi+Melody&family=Qwitcher+Grypen:wght@400;700&display=swap" rel="stylesheet">
+
+
+        
+
+
     <link rel="icon" href="./assets/logo.ico" type="image/x-icon">
     <title>recontent</title>
 </head>
@@ -35,7 +54,7 @@
 <body>
 
 
-    <!-- background -->
+    <!-- background effect -->
     <canvas id="neuro"></canvas>
     <script type="x-shader/x-fragment" id="vertShader">
         precision mediump float;
@@ -109,16 +128,14 @@
     <div id="header-container"></div>
 
     <div id="home-intro">
-        <!-- <div class="home-intro-logo">
-            <img src="./assets/logo.png" class="home-logo">
-            <h1 id="app-name">recontent</h1>
-        </div> -->
-        <!-- <img src="./assets/logo2.png" class="home-logo2"> -->
-        <p>
-            A Machine Learning-Based Hybrid Content Recommendation Platform for Diverse Digital Experiences
+        <div class="home-intro-tagline">Because you deserve <span class="home-intro-tagline-highlight">better than random !</span></div>
+        <p class="home-intro-description">
+            <!-- A Machine Learning-Based Hybrid Content Recommendation Platform for Diverse Digital Experiences -->
+
+            Forget endless scrolling. Get personalized, hand-picked movies, music, books and anything based on what you actually love, right here.
         </p>
+        <button id="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
     </div>
-    <button id="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
 
 </body>
 
