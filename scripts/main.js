@@ -18,4 +18,7 @@ function toggleTheme() {
 
   // Save the user's choice in localStorage
   localStorage.setItem("theme", newTheme);
+
+  // Force a repaint to apply the background color
+  document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background');
 }
