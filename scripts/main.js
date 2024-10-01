@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", setTheme);
 function setTheme() {
   const currentTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", currentTheme);
+
+  document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background');
 }
 
 function toggleTheme() {
