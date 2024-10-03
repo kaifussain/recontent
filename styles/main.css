@@ -13,6 +13,7 @@
     --background-2nd: var(--p-light);
 
     --invert:invert(0.85);
+    --invert-01:invert(1);
 }
 [data-theme='dark'] {
     --background: var(--dark);
@@ -20,6 +21,7 @@
     --background-2nd: var(--p-dark);
     
     --invert:invert(0.3);
+    --invert-01:invert(0);
 }
 
 body{
