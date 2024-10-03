@@ -1,4 +1,5 @@
 let userBoxVisible = false;
+let toggleButtonImg;
 
 async function loadHeader() {
   const response = await fetch("components/header.html");
@@ -36,16 +37,16 @@ function showAndHideUserBox() {
 function setTheme() {
   const currentTheme = localStorage.getItem("theme") || "dark";
   document.documentElement.setAttribute("data-theme", currentTheme);
-  const toggleButton = document.getElementById("theme-toggle");
-  toggleButton.querySelector('img').src= "assets/" + currentTheme + "_mode.svg";
+  toggleButtonImg = document.getElementById("theme-toggle").querySelector('img');
+  toggleButtonImg.src= "assets/" + currentTheme + "_mode.svg";
 }
 
-function toggleTheme(event) {
+function toggleTheme() {
   const currentTheme = localStorage.getItem("theme") || "dark";
 
   const newTheme = currentTheme === "light" ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", newTheme);
-  event.target.src = "assets/" + newTheme + "_mode.svg";
+  toggleButtonImg.src= "assets/" + newTheme + "_mode.svg";
 
   localStorage.setItem("theme", newTheme);
 }

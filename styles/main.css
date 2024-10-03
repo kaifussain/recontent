@@ -31,6 +31,7 @@ body{
 
 *{
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -42,13 +43,3 @@ body{
 .clickable:active{
     transform: scale(0.9);
 }
-
-
-/* responsive & big */
-.font-size-r-b{
-    font-size: clamp(1rem, 3vw, 2rem);
-}
-.bold{
-    font-weight:600;
-}
-

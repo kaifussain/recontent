@@ -15,16 +15,13 @@ canvas#neuro {
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
-  height:43vh;
+  /* height:42vh; */
 }
 
 .home-intro-tagline {
   padding-top:1.4rem;
-  font-weight: 700;
-  font-style: normal;
-  font-size: clamp(1rem, 5vw, 2.5rem);
 
-  background: linear-gradient(-60deg, rgb(96, 108, 114), #4b49a4,var(--text),var(--background-2nd),rgba(62, 134, 163, 0.875), rgb(96, 108, 114));
+  background: linear-gradient(-60deg, var(--text), #4b49a4,var(--background-2nd),rgba(62, 134, 163, 0.875),var(--text));
   background-size: 200%;
   -webkit-background-clip: text;
   color: transparent;
@@ -35,22 +32,24 @@ canvas#neuro {
   0% {
     background-position: 200%;
   }
+  90%{
+    background-position: 75%;
+  }
+  96%{
+    background-position: 60%;
+  }
   100% {
     background-position: 0%;
   }
 }
 
-.home-intro-description {
-  font-size: clamp(0.5rem, 2.8vw, 1.5rem);
-}
 
 #home-options {
   padding: 0 5vw;
-  margin-top:3vh;
+  margin-top:4vw;
 }
 
 .home-options-wrap {
-  margin-top:2vh;
   padding: 1rem;
   display: flex;
   flex-wrap: wrap;
@@ -61,7 +60,7 @@ canvas#neuro {
 
 .card {
   border-radius: 15px;
-  transition: transform 0.25s ease, box-shadow 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.3s ease, filter 0.3s ease;
   padding:1.5rem 2rem;
   text-align: center;
   cursor: pointer;
@@ -69,11 +68,10 @@ canvas#neuro {
 }
 
 .card:hover {
-  transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 0 7px var(--shadow);
+  filter: brightness(1.5);
 }
 .card:active {
-  transform:scale(0.99);
+  transform:scale(0.95);
   box-shadow: 0 0 3px var(--shadow);
 }
 
@@ -88,5 +86,8 @@ canvas#neuro {
 @media (max-width: 600px) {
   .home-options-wrap{
     flex-direction: column;
+  }
+  canvas#neuro{
+    display: none;
   }
 }

@@ -1,7 +1,6 @@
-const containerEl = document.querySelector(".container");
+if (window.innerWidth > 768){
 const canvasEl = document.querySelector("canvas#neuro");
 const devicePixelRatio = Math.min(window.devicePixelRatio, 2);
-
 
 const pointer = {
     x: 0,
@@ -26,13 +25,9 @@ function initShader() {
     const fsSource = document.getElementById("fragShader").innerHTML;
 
     const gl = canvasEl.getContext("webgl") || canvasEl.getContext("experimental-webgl");
-    // const gl = canvasEl.getContext("webgl", { alpha: true }) || canvasEl.getContext("experimental-webgl", { alpha: true });
-
     if (!gl) {
         alert("WebGL is not supported by your browser.");
     }
-
-    // gl.clearColor(0, 0, 0, 0)
 
     function createShader(gl, sourceCode, type) {
         const shader = gl.createShader(type);
@@ -131,4 +126,5 @@ function setupEvents() {
         pointer.tX = eX;
         pointer.tY = eY;
     }
+}
 }
