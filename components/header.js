@@ -37,7 +37,7 @@ function setTheme() {
   const currentTheme = localStorage.getItem("theme") || "dark";
   document.documentElement.setAttribute("data-theme", currentTheme);
   const toggleButton = document.getElementById("theme-toggle");
-  toggleButton.querySelector('img').src= "../assets/" + currentTheme + "_mode.svg";
+  toggleButton.querySelector('img').src= "assets/" + currentTheme + "_mode.svg";
 }
 
 function toggleTheme(event) {
@@ -45,7 +45,7 @@ function toggleTheme(event) {
 
   const newTheme = currentTheme === "light" ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", newTheme);
-  event.target.src = "../assets/" + newTheme + "_mode.svg";
+  event.target.src = "assets/" + newTheme + "_mode.svg";
 
   localStorage.setItem("theme", newTheme);
 }
