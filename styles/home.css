@@ -24,10 +24,12 @@ video {
   display:flex;
   flex-direction: column;
   justify-content: space-evenly;
+  text-align: center;
 }
 
 .home-intro-tagline {
   padding-top:2rem;
+  padding-bottom: 4rem;
 
   background: linear-gradient(-60deg, var(--text), #4b49a4,var(--background-2nd),rgba(62, 134, 163, 0.875),var(--text));
   background-size: 200%;
@@ -55,9 +57,9 @@ video {
 
 
 #home-options {
-  /* padding: 0 5vw; */
-  padding: 3rem 5vw;
+  padding: 4rem 5vw;
   margin-top:4vw;
+  text-align: center;
 }
 
 .home-options-wrap {
