@@ -1,7 +1,18 @@
-<header class="header">
-    <div class="header-logo-container">
-        <img src="./assets/logo.ico" class="header-app-logo">
-        <div class="header-app-name">recontent</div>
+<div>
+    <div class="header">
+        <div class="header-logo-container">
+            <img src="./assets/logo.ico" class="header-app-logo">
+            <div class="header-app-name">recontent</div>
+        </div>
+        <div class="header-hamberger clickable" onclick="showAndHideUserBox()">≡</div>
     </div>
-    <div class="header-hamberger clickable">≡</div>
-</header>
+    <div id="user-box" class="hideUserBox">
+        <div class="user-box-theme-box">
+            Theme: 
+            <div id="theme-toggle" onclick="toggleTheme(event)">
+                <img>
+            </div>
+        </div>
+        <div>list of fav contents</div>
+    </div>
+</div>

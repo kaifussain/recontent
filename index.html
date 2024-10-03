@@ -12,11 +12,10 @@
     <link rel="stylesheet" href="styles/home.css">
 
     <!-- scripts -->
-    <script src="scripts/main.js" defer></script>
-    <script src="scripts/loaders.js" defer></script>
     <script src="scripts/home.js" defer></script>
+    <script src="components/header.js" defer></script>
 
-    <!-- <script src="scripts/_animation.js" defer></script> -->
+    <script src="scripts/_animation.js" defer></script>
 
 
     <!-- google font for 'recontent' -->
@@ -26,25 +25,10 @@
         href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat+Subrayada:wght@400;700&family=Poiret+One&display=swap"
         rel="stylesheet">
 
-
-
-
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Hi+Melody&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Qwitcher+Grypen:wght@400;700&display=swap" rel="stylesheet">
-        
-        
-        
-        
-
-
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Hi+Melody&family=Qwitcher+Grypen:wght@400;700&display=swap" rel="stylesheet">
-
-
-        
+    <!-- google font for 'Montserrat Alternates' -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Hi+Melody&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Qwitcher+Grypen:wght@400;700&display=swap"
+        rel="stylesheet">
 
 
     <link rel="icon" href="./assets/logo.ico" type="image/x-icon">
@@ -115,7 +99,7 @@
             noise = max(.0, noise - .4);
             noise *= (1. - length(vUv - .7));
     
-            color = normalize(vec3(.1, .0 + .3 * cos(2. * u_scroll_progress), .5 + .5 * sin(1. * u_scroll_progress)));
+            color = normalize(vec3(.1, .0 + .3 * cos(1. * u_scroll_progress), .5 + .5 * sin(9. * u_scroll_progress)));
     
             color = color * noise;
     
@@ -128,13 +112,29 @@
     <div id="header-container"></div>
 
     <div id="home-intro">
-        <div class="home-intro-tagline">Because you deserve <span class="home-intro-tagline-highlight">better than random !</span></div>
+        <div class="home-intro-tagline">Because you deserve better than random!</div>
         <p class="home-intro-description">
-            <!-- A Machine Learning-Based Hybrid Content Recommendation Platform for Diverse Digital Experiences -->
-
-            Forget endless scrolling. Get personalized, hand-picked movies, music, books and anything based on what you actually love, right here.
+            Forget endless scrolling. Get personalized, hand-picked movies, music, books and anything based on what you
+            actually love, right here.
         </p>
-        <button id="theme-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
+    <div id="home-options">
+        <div class="font-size-r-b bold">Categories</div>
+        <div class="home-options-wrap">
+
+            <div class="card">
+                <img src="./assets/movie.png">
+                <div>Movies</div>
+            </div>
+            <div class="card">
+                <img src="./assets/song.png">
+                <div>Songs</div>
+            </div>
+            <div class="card">
+                <img src="./assets/book.png">
+                <div>Books</div>
+            </div>
+        </div>
     </div>
 
 </body>

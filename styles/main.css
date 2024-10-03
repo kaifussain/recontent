@@ -1,25 +1,25 @@
 :root {
     --light: #BCBCBC; 
     --dark: #0A162C;
-    --p-light:#83828B;
+    --p-light:#97979d;
     --p-mid:#4A495A;
     --p-dark:#282D40;
-    --semi-trans:rgba(128, 128, 128, 0.443);
+    --shadow:rgba(16, 16, 16, 0.803);
 }
 
 [data-theme='light'] {
     --background: var(--light);
     --text: var(--dark);
+    --background-2nd: var(--p-light);
 
-    --hightlight:black;
-    --shadow:rgba(0, 0, 0, 0.499);
+    --invert:invert(0.85);
 }
 [data-theme='dark'] {
     --background: var(--dark);
     --text: var(--light);
+    --background-2nd: var(--p-dark);
     
-    --hightlight:#eff4f6;;
-    --shadow:rgba(219, 219, 219, 0.499);
+    --invert:invert(0.3);
 }
 
 body{
@@ -37,8 +37,18 @@ body{
 /* global */
 .clickable {
     cursor: pointer;
-    transition: .15s;
+    transition: .2s;
 }
 .clickable:active{
     transform: scale(0.9);
 }
+
+
+/* responsive & big */
+.font-size-r-b{
+    font-size: clamp(1rem, 3vw, 2rem);
+}
+.bold{
+    font-weight:600;
+}
+
