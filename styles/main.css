@@ -1,47 +1,142 @@
+@import url("https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&family=Montserrat+Subrayada:wght@400;700&family=Poiret+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Hi+Melody&family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Qwitcher+Grypen:wght@400;700&display=swap");
+
 :root {
-    --light: #BCBCBC; 
-    --dark: #0A162C;
-    --p-light:#97979d;
-    --p-mid:#4A495A;
-    --p-dark:#282D40;
-    --shadow:rgba(16, 16, 16, 0.803);
+  --light: #bcbcbc;
+  /* --dark: #0a162c; */
+  --dark: #101621;
+  --p-light: #97979d;
+  --p-mid: #4a495a;
+  --p-dark: #282d40;
+  /* --shadow: rgba(16, 16, 16, 0.803); */
+  --shadow: 0 0 5px rgba(16, 16, 16, 0.803);
 }
 
-[data-theme='light'] {
-    --background: var(--light);
-    --text: var(--dark);
-    --background-2nd: var(--p-light);
+[data-theme="light"] {
+  --background: var(--light);
+  --text: var(--dark);
+  --background-2nd: var(--p-light);
+  --background-3rd: #808089;
 
-    --invert:invert(0.85);
-    --invert-01:invert(1);
+  --invert: invert(0.85);
+  --invert-01: invert(1);
 }
-[data-theme='dark'] {
-    --background: var(--dark);
-    --text: var(--light);
-    --background-2nd: var(--p-dark);
-    
-    --invert:invert(0.3);
-    --invert-01:invert(0);
-}
+[data-theme="dark"] {
+  --background: var(--dark);
+  --text: var(--light);
+  --background-2nd: var(--p-dark);
+  --background-3rd: #3d3c52;
 
-body{
-    background-color: var(--background);
-    color:var(--text);
-    font-family: "Montserrat Alternates", sans-serif;
-    margin:0;
+  --invert: invert(0.3);
+  --invert-01: invert(0);
 }
 
-*{
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+body {
+  background-color: var(--background);
+  color: var(--text);
+  margin: 0;
 }
 
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  font-family: "Montserrat Alternates", sans-serif;
+}
 
-/* global */
+/* globals */
 .clickable {
-    cursor: pointer;
-    transition: .2s;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
 }
-.clickable:active{
-    transform: scale(0.9);
+.clickable:hover {
+  filter: brightness(1.5) drop-shadow(0 0 4px var(--background));
+}
+.clickable:active {
+  transform: scale(0.9);
+}
+.custon-scrollbar{
+  scrollbar-width: thin;
+  scrollbar-color: var(--background-3rd) transparent;
+  /* For Webkit browsers like Chrome/Safari */
+  &::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 1rem;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--background-3rd);
+  }
+}
+
+
+/* css for basic header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+  padding: 0.5rem 1rem 0.5rem 0.4rem;
+  background-color: var(--background-2nd);
+}
+
+.header-hamberger {
+  font-size: 2rem;
+  /* border:2px solid red; */
+  height: fit-content;
+  margin-left: 0.3rem;
+}
+
+.header-logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.header-app-logo {
+  width: 4.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  /* filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.51)); */
+  filter: drop-shadow(var(--shadow));
+  background-color: transparent;
+  display: inline-block;
+}
+
+.header-app-name {
+  font-family: "Poiret One", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 1.8rem;
+  padding-bottom: 0.4rem;
+  margin: 0;
+  margin-left: 1rem;
+}
+
+#user-box {
+  background-color: var(--background-2nd);
+  border-radius: 1rem 0 1rem 1rem;
+  padding: 1rem 2rem;
+  width: clamp(20rem, 40vw, 30rem);
+  position: absolute;
+  top: 4.5rem;
+  right: 1rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.25s, opacity 0.25s;
+  z-index: 100;
+}
+
+.hideUserBox {
+  transform: translateY(-3.5rem) translateX(10rem) scale(0);
+  opacity: 0.2;
+}
+
+#theme-toggle {
+  cursor: pointer;
+  width: fit-content;
+}
+#theme-toggle img {
+  filter: var(--invert);
+}
+
+.user-box-theme-box {
+  display: flex;
+  justify-content: space-between;
 }

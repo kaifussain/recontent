@@ -1,11 +1,11 @@
 .video-background{
-  position: fixed; /* Fix the position to the viewport */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* Hide overflow */
-  z-index: -1; /* Send the video behind other content */
+  overflow: hidden;
+  z-index: -1;
 }
 video {
   min-width: 100%;
@@ -15,7 +15,7 @@ video {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Center the video */
+  transform: translate(-50%, -50%);
   filter:grayscale(1) opacity(0.3) var(--invert-01);
 }
 
@@ -25,10 +25,10 @@ video {
   flex-direction: column;
   justify-content: space-evenly;
   text-align: center;
+  align-items: center;
 }
 
 .home-intro-tagline {
-  padding-top:2rem;
   padding-bottom: 4rem;
 
   background: linear-gradient(-60deg, var(--text), #4b49a4,var(--background-2nd),rgba(62, 134, 163, 0.875),var(--text));
@@ -55,15 +55,26 @@ video {
   }
 }
 
+.scroll-button {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--background-2nd);
+  color: var(--text);
+  font-size: 26px;
+}
+
 
 #home-options {
-  padding: 4rem 5vw;
+  padding:19vw 5vw 4rem 5vw;
   margin-top:4vw;
   text-align: center;
+
 }
 
 .home-options-wrap {
-  padding: 1rem;
+  padding: 8vw 1rem 8vw 1rem;
   display: flex;
   flex-wrap: wrap;
   gap: 5vw;
@@ -73,19 +84,9 @@ video {
 
 .card {
   border-radius: 15px;
-  transition: transform 0.25s ease, box-shadow 0.3s ease, filter 0.3s ease;
   padding:1.5rem 2rem;
   text-align: center;
-  cursor: pointer;
   background-color: var(--background-2nd);
-}
-
-.card:hover {
-  filter: brightness(1.5);
-}
-.card:active {
-  transform:scale(0.95);
-  box-shadow: 0 0 3px var(--shadow);
 }
 
 .card img {

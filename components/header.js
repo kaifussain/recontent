@@ -4,7 +4,7 @@ let toggleButtonImg;
 async function loadHeader() {
   const response = await fetch("components/header.html");
   const headerHTML = await response.text();
-  document.getElementById("header-container").innerHTML = headerHTML;
+  document.getElementById("header-wrap").innerHTML = headerHTML;
 
   setTheme()
 
