@@ -164,7 +164,7 @@ function displaySearchResults(results) {
     // Create an image element for the movie poster
     const posterImg = document.createElement("img");
     posterImg.className = "searchTerm-result-poster loading";
-    posterImg.src = "../assets/movie.svg"; // Replace with your default poster path
+    posterImg.src = "./assets/movie.svg"; // Replace with your default poster path
    
     posterImg.style.filter = "var(--invert)"
 
@@ -174,13 +174,13 @@ function displaySearchResults(results) {
   .then(response => response.json())
   .then(data => {
     // posterImg.className = "searchTerm-result-poster";
-    posterImg.classList.remove("loading");
     if (data.Poster && data.Poster !== "N/A") {
       posterImg.src = data.Poster;
       posterImg.style.filter = "none";
     } else {
       //when no poster is found
     }
+    posterImg.classList.remove("loading");
   })
   .catch(error => {
     console.error("Error fetching movie data:", error);
@@ -233,7 +233,7 @@ function displayRandomContent(results){
     const posterImg = document.createElement("img");
     posterImg.className = "random-content-poster loading";
    
-    posterImg.src = "../assets/movie.svg"; // Set default image
+    posterImg.src = "./assets/movie.svg"; // Set default image
     posterImg.style.filter = "var(--invert)"
 
 
@@ -244,7 +244,6 @@ function displayRandomContent(results){
     fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=ae6c583`)
       .then(response => response.json())
       .then(data => {
-        posterImg.classList.remove("loading");
         if (data.Poster && data.Poster !== "N/A") {
           const img = new Image();
           img.onload = function() {
@@ -254,6 +253,7 @@ function displayRandomContent(results){
           };
           img.src = data.Poster;
           detailsDiv.textContent += ' | ⭐' + data.imdbRating;
+          posterImg.classList.remove("loading");
         }
       })
       .catch(error => {
