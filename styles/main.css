@@ -67,7 +67,9 @@ body {
     background-color: var(--background-3rd);
   }
 }
-
+.loading {
+  opacity: 0.25;
+}
 
 /* css for basic header */
 .header {
