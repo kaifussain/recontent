@@ -68,7 +68,27 @@ body {
   }
 }
 .loading {
-  opacity: 0.25;
+  /* opacity: 0.25; */
+  animation: shines 1s infinite linear;
+}
+
+@keyframes shines {
+  0% {
+    /* transform: translateX(-100%) rotate(45deg); */
+      opacity: 0.17;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  100% {
+    /* transform: translateX(100%) rotate(45deg); */
+    opacity: 0.17;
+  }
+}
+
+
+.hide{
+  display: none;
 }
 
 /* css for basic header */
