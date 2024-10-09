@@ -2,7 +2,7 @@ const contentSuggestions = [
   "English",
   "Hindi",
   "Bengali",
-  "urdu",
+  "Urdu",
   "Telugu",
   "Marathi",
   "Horror",
@@ -26,7 +26,7 @@ const contentSuggestions = [
 let selectedSuggestion;
 const suggestionWrap = document.getElementById("suggestions");
 let searchResultShown = false;
-const omdbApiKey = "ae6c583_";
+
 const searchBarWrap = document.getElementById("search-bar-wrap");
 const input = searchBarWrap.querySelector("#search-bar");
 const searchTermResults = searchBarWrap.querySelector("#searchTerm-results-wrap");
@@ -35,7 +35,6 @@ const searchBtn = searchBarWrap.querySelector("#search-btn");
 let noResultSearched = false;
 
 let data;
-
 
 
 fetch("search.csv")
@@ -177,7 +176,7 @@ function searchCSV_short(searchValue) {
     .filter(item => item.category > 0)
     .sort((a, b) => a.category - b.category)
     .map(item => item.row)
-    .slice(0, 25);
+    .slice(0, 24);
 }
 
 
@@ -223,7 +222,7 @@ function searchCSV(searchValue) {
     // If it's a language search, filter by language
     return data
       .filter(row => (row.language || '').toLowerCase() === normalizedSearchValue)
-      .slice(0, 25);
+      .slice(0, 24);
   }
 
   if (isGenreSearch) {
@@ -233,7 +232,7 @@ function searchCSV(searchValue) {
         const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
         return tags.includes(normalizedSearchValue);
       })
-      .slice(0, 25);
+      .slice(0, 24);
   }
 
   // If it's not a language or genre search, use the existing logic
@@ -258,7 +257,7 @@ function searchCSV(searchValue) {
     .filter(item => item.category > 0)
     .sort((a, b) => a.category - b.category)
     .map(item => item.row)
-    .slice(0, 25);
+    .slice(0, 24);
 }
 
 
@@ -286,7 +285,7 @@ function displaySearchResults(results) {
 
     posterImg.style.filter = "var(--invert)";
 
-    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${omdbApiKey}`)
+    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${config.omdbApiKey}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.Poster && data.Poster !== "N/A") {
@@ -368,7 +367,7 @@ function displaySearchedResults(results) {
     detailsDiv.textContent = row.release_date + " | " + row.language;
     detailsDiv.style.fontSize = "0.8em";
 
-    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${omdbApiKey}`)
+    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${config.omdbApiKey}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.Poster && data.Poster !== "N/A") {
@@ -379,8 +378,8 @@ function displaySearchedResults(results) {
           };
           img.src = data.Poster;
           detailsDiv.textContent += " | ⭐" + data.imdbRating;
-          posterImg.classList.remove("loading");
         }
+        posterImg.classList.remove("loading");
       })
       .catch((error) => {
         console.error("Error fetching movie data:", error);
