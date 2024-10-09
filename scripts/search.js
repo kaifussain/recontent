@@ -1,4 +1,10 @@
 const contentSuggestions = [
+  "English",
+  "Hindi",
+  "Bengali",
+  "urdu",
+  "Telugu",
+  "Marathi",
   "Horror",
   "Adventure",
   "Comedy",
@@ -20,11 +26,13 @@ const contentSuggestions = [
 let selectedSuggestion;
 const suggestionWrap = document.getElementById("suggestions");
 let searchResultShown = false;
-const omdbApiKey = "ae6c583";
+const omdbApiKey = "ae6c583_";
 const searchBarWrap = document.getElementById("search-bar-wrap");
 const input = searchBarWrap.querySelector("#search-bar");
 const searchTermResults = searchBarWrap.querySelector("#searchTerm-results-wrap");
 const searchBtn = searchBarWrap.querySelector("#search-btn");
+
+let noResultSearched = false;
 
 let data;
 
@@ -203,42 +211,54 @@ function levenshtein(a, b) {
 }
 
 function searchCSV(searchValue) {
-  // Split the search value into individual terms (keywords)
-  const searchTerms = searchValue.split(/\s+/);
-  const normalizedSearchValue = searchValue.toLowerCase();
+  const normalizedSearchValue = searchValue.trim().toLowerCase();
+  
+  // Check if the search value is a language
+  const isLanguageSearch = ['english', 'hindi', 'bengali', 'punjabi', 'malayalam', 'telugu', 'kannada', 'marathi', 'tamil', 'urdu', 'italian', 'french', 'spanish', 'german', 'russian', 'japanese', 'korean', 'chinese', 'turkish', 'arabic', 'romanian', 'indonesian'].includes(normalizedSearchValue);
+  
+  // Check if the search value is a genre
+  const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime'].includes(normalizedSearchValue);
+  
+  if (isLanguageSearch) {
+    // If it's a language search, filter by language
+    return data
+      .filter(row => (row.language || '').toLowerCase() === normalizedSearchValue)
+      .slice(0, 25);
+  }
 
-  // Create a single filter function to categorize matches
+  if (isGenreSearch) {
+    // If it's a genre search, prioritize matching tags
+    return data
+      .filter(row => {
+        const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
+        return tags.includes(normalizedSearchValue);
+      })
+      .slice(0, 25);
+  }
+
+  // If it's not a language or genre search, use the existing logic
+  const searchTerms = normalizedSearchValue.split(/\s+/);
+
   const categorizeMatch = (row) => {
     const title = (typeof row.title === "string" ? row.title : "").toLowerCase();
     const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
 
-    // Exact title match
     if (title === normalizedSearchValue) return 1;
-
-    // Starting title match (e.g., 'adv' matches 'Adventure')
     if (title.startsWith(normalizedSearchValue)) return 2;
-
-    // Close match using Levenshtein distance, but only for titles of similar length
     if (title.length > 3 && Math.abs(title.length - normalizedSearchValue.length) <= 3) {
-      if (levenshtein(title, normalizedSearchValue) <= 2) return 3; // Allow up to 2 edits
+      if (levenshtein(title, normalizedSearchValue) <= 2) return 3;
     }
-
-    // Partial title match
     if (searchTerms.some(term => title.includes(term))) return 4;
-
-    // Tag match
     if (searchTerms.some(term => tags.includes(term))) return 5;
-
-    return 0; // No match
+    return 0;
   };
 
-  // Filter and sort in a single pass
   return data
     .map(row => ({ row, category: categorizeMatch(row) }))
     .filter(item => item.category > 0)
     .sort((a, b) => a.category - b.category)
     .map(item => item.row)
-    .slice(0, 2);
+    .slice(0, 25);
 }
 
 
@@ -248,7 +268,11 @@ function displaySearchResults(results) {
   console.log("displaySearchResults called");
   searchTermResults.innerHTML = ""; // Clear previous results
   if (results.length === 0) {
-    hideSearchResults();
+    const noResultsMsg = document.createElement("div");
+    noResultsMsg.className = "no-results-message";
+    noResultsMsg.textContent = `No movie found with the term "${input.value}"`;
+    searchTermResults.appendChild(noResultsMsg);
+    showSearchResults();
     return;
   }
   results.forEach((row) => {
@@ -294,6 +318,13 @@ function displaySearchResults(results) {
     resultItem.appendChild(textContainer);
 
     searchTermResults.appendChild(resultItem);
+     // Add click event listener to each searched-results div
+     resultItem.addEventListener('click', () => {
+      // Store the clicked movie data in localStorage
+      localStorage.setItem('chosenContent', JSON.stringify(row));
+      // Navigate to the result page
+      window.location.href = 'result.html';
+    });
   });
   showSearchResults();
 }
@@ -313,6 +344,15 @@ function displaySearchedResults(results) {
   const searchedResultsWrap = document.getElementById("searched-results-wrap");
   searchedResultsWrap.innerHTML = "";
 
+  if (results.length === 0) {
+    const noResultsMsg = document.createElement("div");
+    noResultsMsg.className = "no-results-message";
+    noResultsMsg.textContent = `No movie found with the term "${input.value}"`;
+    searchedResultsWrap.appendChild(noResultsMsg);
+    noResultSearched = true;
+    return;
+  }
+  noResultSearched = false;
   results.forEach((row) => {
     const searchedResults = document.createElement("div");
     searchedResults.className = "searched-results";
@@ -357,6 +397,14 @@ function displaySearchedResults(results) {
     searchedResults.appendChild(textContainer);
 
     searchedResultsWrap.appendChild(searchedResults);
+
+    // Add click event listener to each searched-results div
+    searchedResults.addEventListener('click', () => {
+      // Store the clicked movie data in localStorage
+      localStorage.setItem('chosenContent', JSON.stringify(row));
+      // Navigate to the result page
+      window.location.href = 'result.html';
+    });
   });
 }
 
@@ -364,17 +412,19 @@ function displaySearchedResults(results) {
 // Debounce function
 const debounce = (func, delay) => {
   let timer;
-  return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => func(...args), delay);
+  const debounced = (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
   };
+  debounced.cancel = () => clearTimeout(timer);
+  return debounced;
 };
 
 // Debounced version of searchCSV
 const debouncedSearchCSV = debounce(() => {
   const inputValue = input.value.trim().toLowerCase();
   if (inputValue) {
-      displaySearchResults(searchCSV(inputValue));
+    displaySearchResults(searchCSV(inputValue));
   }
 }, 600);
 
@@ -384,16 +434,19 @@ const debouncedSearchCSV = debounce(() => {
 // all event listeners
 
 function searchOnEnter(event) {
-  if (event.key === "Enter") {
+  if (event.key === "Enter" || event.type === "click") {
+    debouncedSearchCSV.cancel(); // Cancel any ongoing debounced search
+    hideSearchResults(); // Hide search results immediately
     seeInputAndDisplay();
-  }
-  else if (event.key === "Backspace" && input.value.trim() === "") {
+  } else if (event.key === "Backspace" && input.value.trim() === "") {
     hideSearchResults();
+  } else {
+    debouncedSearchCSV(); // Trigger debounced search for other key presses
   }
 }
 
 function clickInInput() {
-  if (!searchResultShown && input.value.trim() !== "") {
+  if (!searchResultShown && input.value.trim() !== "" && !noResultSearched) {
     showSearchResults();
   }
 }
@@ -423,3 +476,6 @@ function seeInputAndDisplay() {
     displaySearchedResults(searchCSV(inputValue));
   }
 }
+
+// Update the event listener for the search button
+searchBtn.addEventListener("click", searchOnEnter);
