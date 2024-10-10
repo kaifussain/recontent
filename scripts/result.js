@@ -48,7 +48,7 @@ function displayContentDetails(content) {
       
       // Update additional movie details
       additionalInfo.innerHTML = `
-        <p><b>Release Date:</b> ${data.Released || ''}</p>
+        <p><b>Release Date:</b> ${data.Released || content.release_date}</p>
         <p><b>IMDB Rating:</b> ${data.imdbRating || ''}</p>
         <p><b>Runtime:</b> ${data.Runtime || ''}</p>
         <p><b>Director:</b> ${data.Director || ''}</p>
@@ -56,13 +56,13 @@ function displayContentDetails(content) {
         <p><b>Genre:</b> ${data.Genre || ''}</p>
         <p><b>Plot:</b> ${data.Plot || ''}</p>
         <p><b>Search: </b> 
-          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(content.title+' '+content.language+' '+(data.Year || '')+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Youtube</a> |
-          <a href="https://www.google.com/search?q=${encodeURIComponent(content.title+' '+content.language+' '+(data.Year || '')+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Google</a>
+          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(content.title+' '+content.language+' '+(data.Year || content.release_date)+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Youtube</a> |
+          <a href="https://www.google.com/search?q=${encodeURIComponent(content.title+' '+content.language+' '+(data.Year || content.release_date)+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Google</a>
         </p>
       `;
 
       // Fetch trailer with the correct year
-      fetchYouTubeTrailer(content.title, content.language, data.Year || '');
+      fetchYouTubeTrailer(content.title, content.language, data.Year || content.release_date);
     })
     .catch((error) => {
       console.error("Error fetching OMDB data:", error);
@@ -71,6 +71,7 @@ function displayContentDetails(content) {
 }
 
 async function getRecommendations(movieId) {
+  recommendationsWrap.innerHTML = '<h4 style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; grid-column: 1 / -1;">Loading...</h4>';
   try {
     const response = await fetch(config.backend, {
       method: 'POST',
@@ -94,29 +95,9 @@ async function getRecommendations(movieId) {
   }
 }
 
-function displayRecommendations_old(recommendedIds) {
-  recommendationsWrap.innerHTML = '<h2>Recommended Movies</h2>';
-
-  for (const id of recommendedIds) {
-    const movie = dataCSV.find(m => m.id === id);
-    if (movie && movie.imdb_id) {
-      try {
-        const movieCard = document.createElement("div");
-        movieCard.className = "movie-card"; 
-        
-        recommendationsWrap.innerHTML += movieCard;
-      } catch (error) {
-        console.error(`Error fetching data for movie ${id}:`, error);
-      }
-    }
-  }
-}
-
-
 
 function displayRecommendations(recommendedIds) {
-  const recommendationsWrap = document.getElementById('recommendations-wrap');
-  // recommendationsWrap.innerHTML = "";
+  recommendationsWrap.innerHTML = "";
 
   if (recommendedIds.length === 0) {
     const noResultsMsg = document.createElement("div");
