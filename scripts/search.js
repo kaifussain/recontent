@@ -18,9 +18,8 @@ const contentSuggestions = [
   "Documentary",
   "Biography",
   "History",
-  "Musical",
   "Western",
-  "Crime",
+  "Crime"
 ];
 
 let selectedSuggestion;
@@ -56,6 +55,16 @@ const famousPersons = [
   'steven spielberg', 'martin scorsese', 'christopher nolan', 'quentin tarantino',
   'james cameron', 'alfred hitchcock', 'stanley kubrick'
 ];
+
+
+let currentApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
+
+function getNextApiKey() {
+  const key = config.omdbApiKey[currentApiKeyIndex];
+  currentApiKeyIndex = (currentApiKeyIndex + 1) % config.omdbApiKey.length;
+  return key;
+}
+
 
 fetch("search.csv")
   .then((response) => response.text())
@@ -119,86 +128,6 @@ function selectSuggestion(clickedItem) {
 
 
 //code for search functionality
-
-function searchCSV_old(searchValue) {
-  // Split the search value into individual terms (keywords)
-  let searchTerms = searchValue.split(/\s+/);
-
-  // Priority 1: Exact title matches where title starts with the full search term (e.g., 'toy story')
-  const exactTitleMatches = data.filter((row) => {
-    const title = typeof row.title === "string" ? row.title.toLowerCase() : "";
-    return title.startsWith(searchValue); // Exact match with full search string
-  });
-
-  // Priority 2: Movies where title starts with any of the individual search terms (e.g., 'toy', 'story')
-  const startingTitleMatches = data.filter((row) => {
-    const title = typeof row.title === "string" ? row.title.toLowerCase() : "";
-    return (
-      !exactTitleMatches.includes(row) &&
-      searchTerms.some((term) => title.startsWith(term))
-    );
-  });
-
-  // Priority 3: Movies where title contains the search terms anywhere
-  const partialTitleMatches = data.filter((row) => {
-    const title = typeof row.title === "string" ? row.title.toLowerCase() : "";
-    return (
-      !exactTitleMatches.includes(row) &&
-      !startingTitleMatches.includes(row) &&
-      searchTerms.some((term) => title.includes(term))
-    );
-  });
-
-  // Priority 4: Movies where tags contain the search terms
-  const tagMatches = data.filter((row) => {
-    const tags = typeof row.tags === "string" ? row.tags.toLowerCase() : "";
-    return (
-      !exactTitleMatches.includes(row) &&
-      !startingTitleMatches.includes(row) &&
-      !partialTitleMatches.includes(row) &&
-      searchTerms.some((term) => tags.includes(term))
-    );
-  });
-
-  // Combine results: exact title matches first, then starting title matches, partial matches, and tag matches
-  const filteredRows = [
-    ...exactTitleMatches,
-    ...startingTitleMatches,
-    ...partialTitleMatches,
-    ...tagMatches,
-  ];
-
-  // Limit the result to a maximum of 10
-  return filteredRows.slice(0, 2);
-}
-
-
-function searchCSV_short(searchValue) {
-  // Split the search value into individual terms (keywords)
-  const searchTerms = searchValue.split(/\s+/);
-  
-  // Create a single filter function to categorize matches
-  const categorizeMatch = (row) => {
-    const title = (typeof row.title === "string" ? row.title : "").toLowerCase();
-    const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
-
-    // Check for exact title match first
-    if (title === searchValue.toLowerCase()) return 1; // Exact title match
-    if (searchTerms.some(term => title.startsWith(term)) && title.length > 1) return 2; // Starting title match
-    if (searchTerms.some(term => title.includes(term))) return 3; // Partial title match
-    if (searchTerms.some(term => tags.includes(term))) return 4; // Tag match
-    return 0; // No match
-  };
-
-  // Filter and sort in a single pass
-  return data
-    .map(row => ({ row, category: categorizeMatch(row) }))
-    .filter(item => item.category > 0)
-    .sort((a, b) => a.category - b.category)
-    .map(item => item.row)
-    .slice(0, 24);
-}
-
 
 function levenshtein(a, b) {
   const matrix = [];
@@ -285,8 +214,6 @@ function searchCSV(searchValue) {
 }
 
 
-
-
 function displaySearchResults(results) {
   console.log("displaySearchResults called");
   searchTermResults.innerHTML = ""; // Clear previous results
@@ -309,7 +236,7 @@ function displaySearchResults(results) {
 
     posterImg.style.filter = "var(--invert)";
 
-    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${config.omdbApiKey}`)
+    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${getNextApiKey()}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.Poster && data.Poster !== "N/A") {
@@ -391,7 +318,7 @@ function displaySearchedResults(results) {
     detailsDiv.textContent = row.release_date + " | " + row.language;
     detailsDiv.style.fontSize = "0.8em";
 
-    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${config.omdbApiKey}`)
+    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${getNextApiKey()}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.Poster && data.Poster !== "N/A") {
@@ -490,7 +417,6 @@ document.addEventListener("click", function (event) {
 });
 
 
-// Add this new function
 function seeInputAndDisplay() {
   let inputValue = input.value.trim().toLowerCase();
 
@@ -500,5 +426,4 @@ function seeInputAndDisplay() {
   }
 }
 
-// Update the event listener for the search button
 searchBtn.addEventListener("click", searchOnEnter);

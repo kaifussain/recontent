@@ -3,13 +3,26 @@ const recommendationsWrap = document.getElementById('recommendations-wrap');
 
 let dataCSV;
 
+let omdbApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
+
+function getNextOmdbApiKey() {
+  const key = config.omdbApiKey[omdbApiKeyIndex];
+  omdbApiKeyIndex = (omdbApiKeyIndex + 1) % config.omdbApiKey.length;
+  return key;
+}
+
+function getYtApiKey() {
+  const key = config.ytApiKey[Math.floor(Math.random() * config.ytApiKey.length)];
+  return key.slice(0,1)+key.slice(2,-1);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const chosenContent = JSON.parse(localStorage.getItem('chosenContent'));
 
   if (chosenContent) {
     displayContentDetails(chosenContent);
   } else {
-    chosenContentWrap.innerHTML = '<p>No content selected. Please go back to the search page.</p>';
+    chosenContentWrap.innerHTML = '<p style="margin:auto;">No content selected. Please go back to the search page.</p>';
   }
 });
 
@@ -37,7 +50,7 @@ function displayContentDetails(content) {
   getRecommendations(content.id);
 
   // Lazy load movie details from OMDB API
-  fetch(`https://www.omdbapi.com/?i=${content.imdb_id}&apikey=${config.omdbApiKey}`)
+  fetch(`https://www.omdbapi.com/?i=${content.imdb_id}&apikey=${getNextOmdbApiKey()}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.Poster && data.Poster !== "N/A") {
@@ -125,9 +138,11 @@ function displayRecommendations(recommendedIds) {
     detailsDiv.textContent = movie.release_date + " | " + movie.language;
     detailsDiv.style.fontSize = "0.8em";
 
-    fetch(`https://www.omdbapi.com/?i=${movie.imdb_id}&apikey=${config.omdbApiKey}`)
-      .then((response) => response.json())
+
+    fetch(`https://www.omdbapi.com/?i=${movie.imdb_id}&apikey=${getNextOmdbApiKey()}`)
+    .then((response) => response.json())
       .then((data) => {
+        posterImg.classList.remove("loading");
         if (data.Poster && data.Poster !== "N/A") {
           const img = new Image();
           img.onload = function () {
@@ -137,7 +152,6 @@ function displayRecommendations(recommendedIds) {
           img.src = data.Poster;
           detailsDiv.textContent += " | ⭐" + data.imdbRating;
         }
-        posterImg.classList.remove("loading");
       })
       .catch((error) => {
         console.error("Error fetching movie data:", error);
@@ -169,7 +183,7 @@ function displayRecommendations(recommendedIds) {
 
 function fetchYouTubeTrailer(title, language, year) {
   const query = `${title} official trailer ${language} ${year}`;
-  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${config.ytApiKey.slice(0, 1)+config.ytApiKey.slice(2,-1)}&type=video&maxResults=1`)
+  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${getYtApiKey()}&type=video&maxResults=1`)
     .then(response => response.json())
     .then(data => {
       if (data.items && data.items.length > 0) {
