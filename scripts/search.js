@@ -36,6 +36,26 @@ let noResultSearched = false;
 
 let data;
 
+// Add this list at the top of your file or in a separate configuration file
+const famousPersons = [
+  // Indian actors
+  'amitabh bachchan', 'shah rukh khan', 'aamir khan', 'salman khan', 'deepika padukone',
+  'priyanka chopra', 'rajinikanth', 'kamal haasan', 'mohanlal', 'mammootty',
+  'akshay kumar', 'hrithik roshan', 'ranbir kapoor', 'ranveer singh', 'katrina kaif',
+  'alia bhatt', 'madhuri dixit', 'aishwarya rai', 'kajol', 'kareena kapoor',
+
+  // Indian directors
+  'satyajit ray', 'raj kapoor', 'yash chopra', 'sanjay leela bhansali', 'anurag kashyap',
+  'mani ratnam', 'ss rajamouli', 'karan johar', 'rohit shetty', 'imtiaz ali',
+
+  // Global actors
+  'tom cruise', 'leonardo dicaprio', 'meryl streep', 'robert de niro', 'al pacino',
+  'brad pitt', 'angelina jolie', 'johnny depp', 'will smith', 'tom hanks',
+
+  // Global directors
+  'steven spielberg', 'martin scorsese', 'christopher nolan', 'quentin tarantino',
+  'james cameron', 'alfred hitchcock', 'stanley kubrick'
+];
 
 fetch("search.csv")
   .then((response) => response.text())
@@ -218,6 +238,9 @@ function searchCSV(searchValue) {
   // Check if the search value is a genre
   const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime'].includes(normalizedSearchValue);
   
+  // Check if the search value is a famous person
+  const isPersonSearch = famousPersons.includes(normalizedSearchValue);
+
   if (isLanguageSearch) {
     // If it's a language search, filter by language
     return data
@@ -225,8 +248,8 @@ function searchCSV(searchValue) {
       .slice(0, 24);
   }
 
-  if (isGenreSearch) {
-    // If it's a genre search, prioritize matching tags
+  if (isGenreSearch || isPersonSearch) {
+    // If it's a genre search or person search, prioritize matching tags
     return data
       .filter(row => {
         const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
@@ -235,7 +258,7 @@ function searchCSV(searchValue) {
       .slice(0, 24);
   }
 
-  // If it's not a language or genre search, use the existing logic
+  // For all other searches (primarily movie titles)
   const searchTerms = normalizedSearchValue.split(/\s+/);
 
   const categorizeMatch = (row) => {
@@ -247,8 +270,9 @@ function searchCSV(searchValue) {
     if (title.length > 3 && Math.abs(title.length - normalizedSearchValue.length) <= 3) {
       if (levenshtein(title, normalizedSearchValue) <= 2) return 3;
     }
-    if (searchTerms.some(term => title.includes(term))) return 4;
-    if (searchTerms.some(term => tags.includes(term))) return 5;
+    if (searchTerms.every(term => title.includes(term))) return 4;
+    if (searchTerms.some(term => title.includes(term))) return 5;
+    if (searchTerms.some(term => tags.includes(term))) return 6;
     return 0;
   };
 
