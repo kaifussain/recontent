@@ -63,7 +63,8 @@
 }
 
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) { */
+@media (max-width: 860px) {
   .header-app-name {
     display: none;
   }

@@ -11,7 +11,6 @@ function scroll() {
     }
     const st = performance.now();
     function a(currentTime) {
-        console.log('hihi')
         const te = currentTime - st;
         const p = Math.min(te / 600, 1);
         const e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;

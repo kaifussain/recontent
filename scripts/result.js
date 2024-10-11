@@ -3,13 +3,14 @@ const recommendationsWrap = document.getElementById('recommendations-wrap');
 
 let dataCSV;
 
-let omdbApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
+// let omdbApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
+console.log(omdbApiKeyIndex)
 
-function getNextOmdbApiKey() {
-  const key = config.omdbApiKey[omdbApiKeyIndex];
-  omdbApiKeyIndex = (omdbApiKeyIndex + 1) % config.omdbApiKey.length;
-  return key;
-}
+// function getNextOmdbApiKey() {
+//   const key = config.omdbApiKey[omdbApiKeyIndex];
+//   omdbApiKeyIndex = (omdbApiKeyIndex + 1) % config.omdbApiKey.length;
+//   return key;
+// }
 
 function getYtApiKey() {
   const key = config.ytApiKey[Math.floor(Math.random() * config.ytApiKey.length)];
@@ -31,10 +32,11 @@ function displayContentDetails(content) {
   const detailsHTML = `
     <div class="chosen-content-poster">
         <img src="assets/movie.svg" class="loading" style="filter: var(--invert);">
+        <button id="add-to-favorites" class="fav-button clickable">Add to Favorites</button>
     </div>
     <div class="chosen-content-info">
-      <h1>${content.title}</h1>
-      <p><b>Language:</b> ${content.language}</p>
+      <h1>${content[2]}</h1>
+      <p><b>Language:</b> ${content[3]}</p>
       <div id="additional-info">
         <p>Loading additional details...</p>
       </div>
@@ -45,12 +47,21 @@ function displayContentDetails(content) {
 
   const posterImg = chosenContentWrap.querySelector('.chosen-content-poster img');
   const additionalInfo = document.getElementById('additional-info');
+  const addToFavoritesBtn = document.getElementById('add-to-favorites');
+
+  // Check if the content is already in favorites
+  // const isAlreadyFavorite = JSON.parse(localStorage.getItem('fav_movies'))?.some(fav => fav[0] === content[0]);
+
+  // Add click event listener to the "Add to Favorites" button
+  checkAndUpdateFavorites(content, addToFavoritesBtn);
+  addToFavoritesBtn.addEventListener('click', () => addToFavorites(content, addToFavoritesBtn));
+
 
   // Fetch recommendations immediately
-  getRecommendations(content.id);
+  getRecommendations(content[0]); //sending id and receiving ids from server
 
   // Lazy load movie details from OMDB API
-  fetch(`https://www.omdbapi.com/?i=${content.imdb_id}&apikey=${getNextOmdbApiKey()}`)
+  fetch(`https://www.omdbapi.com/?i=${content[1]}&apikey=${getNextOmdbApiKey()}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.Poster && data.Poster !== "N/A") {
@@ -61,7 +72,7 @@ function displayContentDetails(content) {
       
       // Update additional movie details
       additionalInfo.innerHTML = `
-        <p><b>Release Date:</b> ${data.Released || content.release_date}</p>
+        <p><b>Release Date:</b> ${data.Released || content[4]}</p>
         <p><b>IMDB Rating:</b> ${data.imdbRating || ''}</p>
         <p><b>Runtime:</b> ${data.Runtime || ''}</p>
         <p><b>Director:</b> ${data.Director || ''}</p>
@@ -69,19 +80,53 @@ function displayContentDetails(content) {
         <p><b>Genre:</b> ${data.Genre || ''}</p>
         <p><b>Plot:</b> ${data.Plot || ''}</p>
         <p><b>Search: </b> 
-          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(content.title+' '+content.language+' '+(data.Year || content.release_date)+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Youtube</a> |
-          <a href="https://www.google.com/search?q=${encodeURIComponent(content.title+' '+content.language+' '+(data.Year || content.release_date)+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Google</a>
+          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(content[2]+' '+content[3]+' '+(data.Year || content[4])+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Youtube</a> |
+          <a href="https://www.google.com/search?q=${encodeURIComponent(content[2]+' '+content[3]+' '+(data.Year || content[4])+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Google</a>
         </p>
       `;
 
       // Fetch trailer with the correct year
-      fetchYouTubeTrailer(content.title, content.language, data.Year || content.release_date);
+      fetchYouTubeTrailer(content[2], content[3], data.Year || content[4]);
     })
     .catch((error) => {
       console.error("Error fetching OMDB data:", error);
       additionalInfo.innerHTML = '<p>Error loading additional details.</p>';
     });
 }
+
+// Modify this function to handle adding content to favorites
+function addToFavorites(content, button) {
+  let favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
+  
+  // Check if the content is already in favorites
+  // const isAlreadyFavorite = favorites.some(fav => fav.id === content.id);
+  const isAlreadyFavorite = favorites.some(fav => fav[0] === content[0]);
+  
+  if (!isAlreadyFavorite) {
+    favorites.push(content);
+    localStorage.setItem('fav_movies', JSON.stringify(favorites));
+    button.textContent = 'Added to Favorites';
+    button.classList.add('fav-button-added');
+  } else {
+    // Remove the content from favorites
+    // favorites = favorites.filter(fav => fav[0] !== content[0]);
+    favorites.splice(favorites.findIndex(fav => fav[0] === content[0]), 1);
+    localStorage.setItem('fav_movies', JSON.stringify(favorites));
+    button.textContent = 'Add to Favorites';
+    button.classList.remove('fav-button-added');
+  }
+}
+
+function checkAndUpdateFavorites(content, button) {
+  const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
+  const isAlreadyFavorite = favorites.some(fav => fav[0] === content[0]);
+  button.textContent = isAlreadyFavorite ? 'Added to Favorites' : 'Add to Favorites';
+  button.classList.toggle('fav-button-added', isAlreadyFavorite);
+
+  // button.addEventListener('click', () => addToFavorites(content, button));
+}
+
+
 
 async function getRecommendations(movieId) {
   recommendationsWrap.innerHTML = '<h4 style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; grid-column: 1 / -1;">Loading...</h4>';
@@ -172,7 +217,8 @@ function displayRecommendations(recommendedIds) {
     // Add click event listener to each searched-results div
     recommendedCard.addEventListener('click', () => {
       // Store the clicked movie data in localStorage
-      localStorage.setItem('chosenContent', JSON.stringify(movie));
+      // localStorage.setItem('chosenContent', JSON.stringify(movie));
+      localStorage.setItem('chosenContent', JSON.stringify([movie.id,movie.imdb_id,movie.title,movie.language,movie.release_date]));
       // Navigate to the result page
       window.location.href = 'result.html';
     });

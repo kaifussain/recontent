@@ -2,7 +2,6 @@ const contentSuggestions = [
   "English",
   "Hindi",
   "Bengali",
-  "Urdu",
   "Telugu",
   "Marathi",
   "Horror",
@@ -17,7 +16,6 @@ const contentSuggestions = [
   "Animation",
   "Documentary",
   "Biography",
-  "History",
   "Western",
   "Crime"
 ];
@@ -57,13 +55,13 @@ const famousPersons = [
 ];
 
 
-let currentApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
+// let currentApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
 
-function getNextApiKey() {
-  const key = config.omdbApiKey[currentApiKeyIndex];
-  currentApiKeyIndex = (currentApiKeyIndex + 1) % config.omdbApiKey.length;
-  return key;
-}
+// function getNextApiKey() {
+//   const key = config.omdbApiKey[omdbApiKeyIndex];
+//   omdbApiKeyIndex = (omdbApiKeyIndex + 1) % config.omdbApiKey.length;
+//   return key;
+// }
 
 
 fetch("search.csv")
@@ -165,7 +163,7 @@ function searchCSV(searchValue) {
   const isLanguageSearch = ['english', 'hindi', 'bengali', 'punjabi', 'malayalam', 'telugu', 'kannada', 'marathi', 'tamil', 'urdu', 'italian', 'french', 'spanish', 'german', 'russian', 'japanese', 'korean', 'chinese', 'turkish', 'arabic', 'romanian', 'indonesian'].includes(normalizedSearchValue);
   
   // Check if the search value is a genre
-  const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime'].includes(normalizedSearchValue);
+  const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime', 'western'].includes(normalizedSearchValue);
   
   // Check if the search value is a famous person
   const isPersonSearch = famousPersons.includes(normalizedSearchValue);
@@ -236,7 +234,7 @@ function displaySearchResults(results) {
 
     posterImg.style.filter = "var(--invert)";
 
-    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${getNextApiKey()}`)
+    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${getNextOmdbApiKey()}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.Poster && data.Poster !== "N/A") {
@@ -271,7 +269,8 @@ function displaySearchResults(results) {
      // Add click event listener to each searched-results div
      resultItem.addEventListener('click', () => {
       // Store the clicked movie data in localStorage
-      localStorage.setItem('chosenContent', JSON.stringify(row));
+      // localStorage.setItem('chosenContent', JSON.stringify(row));
+      localStorage.setItem('chosenContent', JSON.stringify([row.id,row.imdb_id,row.title,row.language,row.release_date]));
       // Navigate to the result page
       window.location.href = 'result.html';
     });
@@ -318,7 +317,7 @@ function displaySearchedResults(results) {
     detailsDiv.textContent = row.release_date + " | " + row.language;
     detailsDiv.style.fontSize = "0.8em";
 
-    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${getNextApiKey()}`)
+    fetch(`https://www.omdbapi.com/?i=${row.imdb_id}&apikey=${getNextOmdbApiKey()}`)
       .then((response) => response.json())
       .then((data) => {
         if (data.Poster && data.Poster !== "N/A") {
@@ -351,7 +350,8 @@ function displaySearchedResults(results) {
     // Add click event listener to each searched-results div
     searchedResults.addEventListener('click', () => {
       // Store the clicked movie data in localStorage
-      localStorage.setItem('chosenContent', JSON.stringify(row));
+      // localStorage.setItem('chosenContent', JSON.stringify(row));/
+      localStorage.setItem('chosenContent', JSON.stringify([row.id,row.imdb_id,row.title,row.language,row.release_date]));
       // Navigate to the result page
       window.location.href = 'result.html';
     });
