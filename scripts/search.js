@@ -2,17 +2,17 @@ const contentSuggestions = [
   "English",
   "Hindi",
   "Bengali",
-  "Telugu",
-  "Marathi",
   "Horror",
   "Adventure",
   "Comedy",
   "Romance",
   "Drama",
   "Action",
+  "Fiction",
   "Fantasy",
   "Thriller",
   "Mystery",
+  "Family",
   "Animation",
   "Documentary",
   "Biography",
@@ -155,7 +155,7 @@ function searchCSV(searchValue) {
   const isLanguageSearch = ['english', 'hindi', 'bengali', 'punjabi', 'malayalam', 'telugu', 'kannada', 'marathi', 'tamil', 'urdu', 'italian', 'french', 'spanish', 'german', 'russian', 'japanese', 'korean', 'chinese', 'turkish', 'arabic', 'romanian', 'indonesian'].includes(normalizedSearchValue);
   
   // Check if the search value is a genre
-  const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime', 'western'].includes(normalizedSearchValue);
+  const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime', 'western', 'fiction', 'family'].includes(normalizedSearchValue);
   
   // Check if the search value is a famous person
   const isPersonSearch = famousPersons.includes(normalizedSearchValue);
@@ -341,7 +341,6 @@ function displaySearchedResults(results) {
     // Add click event listener to each searched-results div
     searchedResults.addEventListener('click', () => {
       // Store the clicked movie data in localStorage
-      // localStorage.setItem('chosenContent', JSON.stringify(row));/
       localStorage.setItem('chosenContent', JSON.stringify([row.id,row.imdb_id,row.title,row.language,row.release_date]));
       // Navigate to the result page
       window.location.href = 'result.html';
@@ -414,6 +413,15 @@ function seeInputAndDisplay() {
   if (inputValue !== '') {
     hideSearchResults();
     displaySearchedResults(searchCSV(inputValue));
+    
+    // Remove selectedSuggestion class from the currently selected item
+    const selectedItem = suggestionWrap.querySelector(".selectedSuggestion");
+    if (selectedItem) {
+      selectedItem.classList.remove("selectedSuggestion");
+    }
+    
+    // Reset selectedSuggestion variable
+    selectedSuggestion = null;
   }
 }
 

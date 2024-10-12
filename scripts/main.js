@@ -56,7 +56,7 @@ function updateFavoritesList() {
   const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
   
   if (favorites.length === 0) {
-    favoriteList.innerHTML = '<div>Empty!</div>';
+    favoriteList.innerHTML = '<p>Empty!</p>';
     return;
   }
 

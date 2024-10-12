@@ -24,6 +24,7 @@
   border-radius: 0 2rem 2rem 0;
   width: 3rem;
   height: 2rem;
+  cursor: pointer;
 }
 #search-btn img {
   filter: var(--invert);
@@ -64,14 +65,39 @@
 
 
 /* @media (max-width: 600px) { */
-@media (max-width: 860px) {
+@media (max-width: 780px) {
+  .header {
+    flex-wrap: wrap;
+  }
+
   .header-app-name {
-    display: none;
+    display: block;
   }
+
   #search-bar-wrap {
-    margin-right: 0;
-    margin-left: 0;
+    order: 1;
+    width: 100%;
+    margin: 0.5rem 0 0;
   }
+
+  #search-bar {
+    width: calc(100% - 3rem); /* Subtracting the width of the search button */
+    max-width: none;
+  }
+
+  .header-logo-container,
+  .header-right-icons-wrap {
+    flex: 1;
+  }
+
+  .header-right-icons-wrap {
+    justify-content: flex-end;
+  }
+}
+
+#suggestions-container {
+  position: relative;
+  overflow: hidden;
 }
 
 #suggestions {
@@ -81,8 +107,9 @@
   white-space: nowrap;
   scrollbar-width: none; /* For Firefox */
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  -webkit-mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent);
+  mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent);
 }
-
 
 #suggestions::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, and Opera */
@@ -97,8 +124,14 @@
   white-space: nowrap;
   cursor: pointer;
 }
-.suggestion-item:hover {
-  background-color: var(--background-3rd);
+
+/* Optional: Add padding to the first and last items to prevent them from being cut off */
+.suggestion-item:first-child {
+  margin-left: 30px;
+}
+
+.suggestion-item:last-child {
+  margin-right: 30px;
 }
 
 .selectedSuggestion {

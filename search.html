@@ -27,14 +27,14 @@
         </div>
         <div id="search-bar-wrap">
             <input id="search-bar" placeholder="Search for a content" oninput="debouncedSearchCSV()" onkeyup="searchOnEnter(event)" onclick="clickInInput()">
-            <button id="search-btn" class="clickable" onclick="seeInputAndDisplay()">
+            <button id="search-btn" onclick="seeInputAndDisplay()">
                 <img src="assets/search.svg">
             </button>
             <div id="searchTerm-results-wrap" class="hide">
                 <!-- searchTerm-result will be added here by JavaScript -->
             </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="header-right-icons-wrap">
             <img id="theme-toggle" class="header-right-icons clickable-no-filter" onclick="toggleTheme()">
             <img id="header-menu" src="assets/fav.svg" class="header-right-icons clickable-no-filter" onclick="showAndHideUserBox()">
         </div>
@@ -45,8 +45,10 @@
     </div>
 
 
-    <div id="suggestions">
-        <!-- Suggestions will be dynamically added here by JavaScript -->
+    <div id="suggestions-container">
+        <div id="suggestions">
+            <!-- Suggestions will be dynamically added here by JavaScript -->
+        </div>
     </div>
 
 
