@@ -64,7 +64,8 @@ fetch("search.csv")
       complete: function (results) {
         console.log("fetch complete");
         data = results.data; // Parsed CSV data
-        displaySearchedResults(searchCSV(selectedSuggestion.trim().toLowerCase()));
+        const searchTerm = selectedSuggestion || contentSuggestions[0]; // Use first suggestion as default
+        displaySearchedResults(searchCSV(searchTerm.trim().toLowerCase()));
       },
     });
   })
@@ -260,7 +261,6 @@ function displaySearchResults(results) {
      // Add click event listener to each searched-results div
      resultItem.addEventListener('click', () => {
       // Store the clicked movie data in localStorage
-      // localStorage.setItem('chosenContent', JSON.stringify(row));
       localStorage.setItem('chosenContent', JSON.stringify([row.id,row.imdb_id,row.title,row.language,row.release_date]));
       // Navigate to the result page
       window.location.href = 'result.html';

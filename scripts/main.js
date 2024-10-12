@@ -1,11 +1,8 @@
 let userBoxVisible = false;
 let toggleButtonImg;
 let omdbApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
-console.log(omdbApiKeyIndex)
 
 setTheme();
-// initializeFavoritesList(); // Add this line
-// updateFavoritesList();
 
 // Add event listener to close the user-box when clicking outside
 document.addEventListener("click", (event) => {
@@ -32,7 +29,6 @@ function showAndHideUserBox() {
   } else {
     userBox.classList.remove("hideUserBox");
     userBoxVisible = true;
-    // Remove the call to displayFavorites()
   }
 }
 
@@ -65,13 +61,13 @@ function updateFavoritesList() {
   }
 
   let favoritesHTML = '';
-  favorites.forEach((movie, index) => {
+  favorites.forEach((content, index) => {
     favoritesHTML += `
-      <div class="favorite-item">
-        <img src="assets/movie.svg" class="favorite-poster loading" data-imdb-id="${movie[1]}" style="filter: var(--invert);">
+      <div class="favorite-item" data-index="${index}">
+        <img src="assets/movie.svg" class="favorite-poster loading" data-imdb-id="${content[1]}" style="filter: var(--invert);">
         <div class="favorite-details">
-          <div class="favorite-title">${movie[2]}</div>
-          <div class="favorite-year">${movie[4]}</div>
+          <div class="favorite-title">${content[2]}</div>
+          <div class="favorite-year">${content[4]}</div>
         </div>
         <button class="delete-favorite" data-index="${index}">×</button>
       </div>
@@ -82,6 +78,11 @@ function updateFavoritesList() {
   // Add event listeners to delete buttons
   document.querySelectorAll('.delete-favorite').forEach(button => {
     button.addEventListener('click', deleteFavorite);
+  });
+
+  // Add event listeners to favorite items
+  document.querySelectorAll('.favorite-item').forEach(item => {
+    item.addEventListener('click', openFavoriteResult);
   });
 
   // Lazy load images
@@ -119,4 +120,16 @@ function lazyLoadFavoritePosters() {
       }
     });
   }, 100); // Small delay to ensure DOM is ready
+}
+
+function openFavoriteResult(event) {
+  const index = event.currentTarget.dataset.index;
+  const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
+  const selectedContent = favorites[index];
+
+  // Store the selected content in localStorage
+  localStorage.setItem('chosenContent', JSON.stringify(selectedContent));
+
+  // Navigate to the result page
+  window.location.href = 'result.html';
 }

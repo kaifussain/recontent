@@ -56,7 +56,7 @@ function displayContentDetails(content) {
 
   // Add click event listener to the "Add to Favorites" button
   checkAndUpdateFavorites(content, addToFavoritesBtn);
-  addToFavoritesBtn.addEventListener('click', () => addToFavorites(content, addToFavoritesBtn));
+  addToFavoritesBtn.addEventListener('click', (event) => addToFavorites(content, addToFavoritesBtn, event));
 
 
   // Fetch recommendations immediately
@@ -97,7 +97,8 @@ function displayContentDetails(content) {
 }
 
 // Modify this function to handle adding content to favorites
-function addToFavorites(content, button) {
+function addToFavorites(content, button, event) {
+  event.stopPropagation();
   let favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
   
   const isAlreadyFavorite = favorites.some(fav => fav[0] === content[0]);
