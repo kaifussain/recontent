@@ -97,7 +97,6 @@ function deleteFavorite(event) {
   favorites.splice(index, 1);
   localStorage.setItem('fav_movies', JSON.stringify(favorites));
   
-  // initializeFavoritesList(); // Refresh the favorites list
   updateFavoritesList();
 }
 

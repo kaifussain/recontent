@@ -3,14 +3,6 @@ const recommendationsWrap = document.getElementById('recommendations-wrap');
 
 let dataCSV;
 
-// let omdbApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
-console.log(omdbApiKeyIndex)
-
-// function getNextOmdbApiKey() {
-//   const key = config.omdbApiKey[omdbApiKeyIndex];
-//   omdbApiKeyIndex = (omdbApiKeyIndex + 1) % config.omdbApiKey.length;
-//   return key;
-// }
 
 function getYtApiKey() {
   const key = config.ytApiKey[Math.floor(Math.random() * config.ytApiKey.length)];
@@ -81,9 +73,20 @@ function displayContentDetails(content) {
         <p><b>Actors:</b> ${data.Actors || ''}</p>
         <p><b>Genre:</b> ${data.Genre || ''}</p>
         <p><b>Plot:</b> ${data.Plot || ''}</p>
-        <p><b>Search: </b> 
-          <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(content[2]+' '+content[3]+' '+(data.Year || content[4])+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Youtube</a> |
-          <a href="https://www.google.com/search?q=${encodeURIComponent(content[2]+' '+content[3]+' '+(data.Year || content[4])+ ' movie')}" target="_blank" style="color: inherit; text-decoration: underline;">Google</a>
+        <p style="display: flex; align-items: center; margin-top: 30px;">
+          <b>Search: </b>
+          <span style="display: flex; align-items: center; margin-left: 20px;">
+            <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(content[2]+' '+content[3]+' '+(data.Year || content[4])+ ' movie')}" target="_blank" style="color: inherit; text-decoration: none; margin-right: 18px; display: flex;" class="clickable-no-filter">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+              </svg>
+            </a>
+            <a href="https://www.google.com/search?q=${encodeURIComponent(content[2]+' '+content[3]+' '+(data.Year || content[4])+ ' movie')}" target="_blank" style="color: inherit; text-decoration: none; display: flex;" class="clickable-no-filter">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+              </svg>
+            </a>
+          </span>
         </p>
       `;
 
@@ -124,45 +127,8 @@ function checkAndUpdateFavorites(content, button) {
   const isAlreadyFavorite = favorites.some(fav => fav[0] === content[0]);
   button.textContent = isAlreadyFavorite ? 'Added to Favorites' : 'Add to Favorites';
   button.classList.toggle('fav-button-added', isAlreadyFavorite);
-
-  // button.addEventListener('click', () => addToFavorites(content, button));
 }
 
-// function updateFavoritesList() {
-//   console.log("updateFavoriteList")
-//   const favoriteList = document.getElementById("favorite-list");
-//   const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
-  
-//   if (favorites.length === 0) {
-//     favoriteList.innerHTML = '<div>Empty!</div>';
-//     return;
-//   }
-
-//   let favoritesHTML = '';
-//   favorites.forEach((movie, index) => {
-//     favoritesHTML += `
-//       <div class="favorite-item">
-//         <img src="assets/movie.svg" class="favorite-poster loading" data-imdb-id="${movie[1]}" style="filter: var(--invert);">
-//         <div class="favorite-details">
-//           <div class="favorite-title">${movie[2]}</div>
-//           <div class="favorite-year">${movie[4]}</div>
-//         </div>
-//         <button class="delete-favorite" data-index="${index}">×</button>
-//       </div>
-//     `;
-//   });
-//   favoriteList.innerHTML = favoritesHTML;
-
-//   // Add event listeners to delete buttons
-//   document.querySelectorAll('.delete-favorite').forEach(button => {
-//     button.addEventListener('click', deleteFavorite);
-//   });
-
-//   // Lazy load images
-//   lazyLoadFavoritePosters();
-// }
-
-// updateFavoritesList()
 
 function deleteFavorite(event) {
   console.log('deleteFavorite')
@@ -180,31 +146,9 @@ function deleteFavorite(event) {
   favorites.splice(index, 1);
   localStorage.setItem('fav_movies', JSON.stringify(favorites));
 
-  
-  // resetAddToFavBtn();
   updateFavoritesList(); // Refresh the favorites list
 }
 
-// function lazyLoadFavoritePosters() {
-//   console.log('lazyLoadFavoritePosters result.js')
-//   setTimeout(() => {
-//     document.querySelectorAll('.favorite-poster').forEach(img => {
-//       const imdbId = img.dataset.imdbId;
-//       if (imdbId) {
-//         fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=${getNextOmdbApiKey()}`)
-//           .then(response => response.json())
-//           .then(data => {
-//             img.classList.remove("loading");
-//             if (data.Poster && data.Poster !== "N/A") {
-//               img.src = data.Poster;
-//               img.style.filter = "none";
-//             }
-//           })
-//           .catch(error => console.error("Error fetching movie poster:", error));
-//       }
-//     });
-//   }, 100); // Small delay to ensure DOM is ready
-// }
 
 async function getRecommendations(movieId) {
   recommendationsWrap.innerHTML = '<h4 style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; grid-column: 1 / -1;">Loading...</h4>';
@@ -295,7 +239,6 @@ function displayRecommendations(recommendedIds) {
     // Add click event listener to each searched-results div
     recommendedCard.addEventListener('click', () => {
       // Store the clicked movie data in localStorage
-      // localStorage.setItem('chosenContent', JSON.stringify(movie));
       localStorage.setItem('chosenContent', JSON.stringify([movie.id,movie.imdb_id,movie.title,movie.language,movie.release_date]));
       // Navigate to the result page
       window.location.href = 'result.html';
