@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (chosenContent) {
     displayContentDetails(chosenContent);
+    updateFavoritesList();
   } else {
     chosenContentWrap.innerHTML = '<p style="margin:auto;">No content selected. Please go back to the search page.</p>';
   }
@@ -47,6 +48,7 @@ function displayContentDetails(content) {
 
   const posterImg = chosenContentWrap.querySelector('.chosen-content-poster img');
   const additionalInfo = document.getElementById('additional-info');
+
   const addToFavoritesBtn = document.getElementById('add-to-favorites');
 
   // Check if the content is already in favorites
@@ -98,8 +100,6 @@ function displayContentDetails(content) {
 function addToFavorites(content, button) {
   let favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
   
-  // Check if the content is already in favorites
-  // const isAlreadyFavorite = favorites.some(fav => fav.id === content.id);
   const isAlreadyFavorite = favorites.some(fav => fav[0] === content[0]);
   
   if (!isAlreadyFavorite) {
@@ -108,13 +108,14 @@ function addToFavorites(content, button) {
     button.textContent = 'Added to Favorites';
     button.classList.add('fav-button-added');
   } else {
-    // Remove the content from favorites
-    // favorites = favorites.filter(fav => fav[0] !== content[0]);
-    favorites.splice(favorites.findIndex(fav => fav[0] === content[0]), 1);
+    favorites = favorites.filter(fav => fav[0] !== content[0]);
     localStorage.setItem('fav_movies', JSON.stringify(favorites));
     button.textContent = 'Add to Favorites';
     button.classList.remove('fav-button-added');
   }
+
+  // Update the favorites list in the user box
+  updateFavoritesList();
 }
 
 function checkAndUpdateFavorites(content, button) {
@@ -126,7 +127,83 @@ function checkAndUpdateFavorites(content, button) {
   // button.addEventListener('click', () => addToFavorites(content, button));
 }
 
+// function updateFavoritesList() {
+//   console.log("updateFavoriteList")
+//   const favoriteList = document.getElementById("favorite-list");
+//   const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
+  
+//   if (favorites.length === 0) {
+//     favoriteList.innerHTML = '<div>Empty!</div>';
+//     return;
+//   }
 
+//   let favoritesHTML = '';
+//   favorites.forEach((movie, index) => {
+//     favoritesHTML += `
+//       <div class="favorite-item">
+//         <img src="assets/movie.svg" class="favorite-poster loading" data-imdb-id="${movie[1]}" style="filter: var(--invert);">
+//         <div class="favorite-details">
+//           <div class="favorite-title">${movie[2]}</div>
+//           <div class="favorite-year">${movie[4]}</div>
+//         </div>
+//         <button class="delete-favorite" data-index="${index}">×</button>
+//       </div>
+//     `;
+//   });
+//   favoriteList.innerHTML = favoritesHTML;
+
+//   // Add event listeners to delete buttons
+//   document.querySelectorAll('.delete-favorite').forEach(button => {
+//     button.addEventListener('click', deleteFavorite);
+//   });
+
+//   // Lazy load images
+//   lazyLoadFavoritePosters();
+// }
+
+// updateFavoritesList()
+
+function deleteFavorite(event) {
+  console.log('deleteFavorite')
+  event.stopPropagation();
+  const index = event.target.dataset.index;
+  const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
+  const chosenContent = JSON.parse(localStorage.getItem('chosenContent')) || [];
+  
+  console.log('>>>',favorites[index],chosenContent)
+  if(favorites[index][0] === chosenContent[0]){
+    const btn = document.getElementById('add-to-favorites');
+    btn.textContent = 'Add to Favorites';
+    btn.classList.remove('fav-button-added');
+  }
+  favorites.splice(index, 1);
+  localStorage.setItem('fav_movies', JSON.stringify(favorites));
+
+  
+  // resetAddToFavBtn();
+  updateFavoritesList(); // Refresh the favorites list
+}
+
+// function lazyLoadFavoritePosters() {
+//   console.log('lazyLoadFavoritePosters result.js')
+//   setTimeout(() => {
+//     document.querySelectorAll('.favorite-poster').forEach(img => {
+//       const imdbId = img.dataset.imdbId;
+//       if (imdbId) {
+//         fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=${getNextOmdbApiKey()}`)
+//           .then(response => response.json())
+//           .then(data => {
+//             img.classList.remove("loading");
+//             if (data.Poster && data.Poster !== "N/A") {
+//               img.src = data.Poster;
+//               img.style.filter = "none";
+//             }
+//           })
+//           .catch(error => console.error("Error fetching movie poster:", error));
+//       }
+//     });
+//   }, 100); // Small delay to ensure DOM is ready
+// }
 
 async function getRecommendations(movieId) {
   recommendationsWrap.innerHTML = '<h4 style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; grid-column: 1 / -1;">Loading...</h4>';

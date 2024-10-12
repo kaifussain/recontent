@@ -4,6 +4,8 @@ let omdbApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
 console.log(omdbApiKeyIndex)
 
 setTheme();
+// initializeFavoritesList(); // Add this line
+// updateFavoritesList();
 
 // Add event listener to close the user-box when clicking outside
 document.addEventListener("click", (event) => {
@@ -30,7 +32,7 @@ function showAndHideUserBox() {
   } else {
     userBox.classList.remove("hideUserBox");
     userBoxVisible = true;
-    displayFavorites(); // Update favorites when showing the user-box
+    // Remove the call to displayFavorites()
   }
 }
 
@@ -52,7 +54,8 @@ function toggleTheme() {
   localStorage.setItem("theme", newTheme);
 }
 
-function displayFavorites() {
+// function initializeFavoritesList() {
+function updateFavoritesList() {
   const favoriteList = document.getElementById("favorite-list");
   const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
   
@@ -82,6 +85,23 @@ function displayFavorites() {
   });
 
   // Lazy load images
+  lazyLoadFavoritePosters();
+}
+
+function deleteFavorite(event) {
+  event.stopPropagation();
+  const index = event.target.dataset.index;
+  const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
+  
+  favorites.splice(index, 1);
+  localStorage.setItem('fav_movies', JSON.stringify(favorites));
+  
+  // initializeFavoritesList(); // Refresh the favorites list
+  updateFavoritesList();
+}
+
+function lazyLoadFavoritePosters() {
+  console.log('lazyLoadFavoritePosters main.js')
   setTimeout(() => {
     document.querySelectorAll('.favorite-poster').forEach(img => {
       const imdbId = img.dataset.imdbId;
@@ -99,15 +119,4 @@ function displayFavorites() {
       }
     });
   }, 100); // Small delay to ensure DOM is ready
-}
-
-function deleteFavorite(event) {
-  event.stopPropagation();
-  const index = event.target.dataset.index;
-  const favorites = JSON.parse(localStorage.getItem('fav_movies')) || [];
-  
-  favorites.splice(index, 1);
-  localStorage.setItem('fav_movies', JSON.stringify(favorites));
-  
-  displayFavorites(); // Refresh the favorites list
 }

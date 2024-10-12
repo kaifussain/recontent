@@ -54,16 +54,7 @@ const famousPersons = [
   'james cameron', 'alfred hitchcock', 'stanley kubrick'
 ];
 
-
-// let currentApiKeyIndex = Math.floor(Math.random() * config.omdbApiKey.length);
-
-// function getNextApiKey() {
-//   const key = config.omdbApiKey[omdbApiKeyIndex];
-//   omdbApiKeyIndex = (omdbApiKeyIndex + 1) % config.omdbApiKey.length;
-//   return key;
-// }
-
-
+updateFavoritesList()
 fetch("search.csv")
   .then((response) => response.text())
   .then((csvText) => {
