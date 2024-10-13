@@ -15,7 +15,6 @@ const contentSuggestions = [
   "Family",
   "Animation",
   "Documentary",
-  "Biography",
   "Western",
   "Crime"
 ];
@@ -33,26 +32,10 @@ let noResultSearched = false;
 
 let data;
 
-// Add this list at the top of your file or in a separate configuration file
-const famousPersons = [
-  // Indian actors
-  'amitabh bachchan', 'shah rukh khan', 'aamir khan', 'salman khan', 'deepika padukone',
-  'priyanka chopra', 'rajinikanth', 'kamal haasan', 'mohanlal', 'mammootty',
-  'akshay kumar', 'hrithik roshan', 'ranbir kapoor', 'ranveer singh', 'katrina kaif',
-  'alia bhatt', 'madhuri dixit', 'aishwarya rai', 'kajol', 'kareena kapoor',
 
-  // Indian directors
-  'satyajit ray', 'raj kapoor', 'yash chopra', 'sanjay leela bhansali', 'anurag kashyap',
-  'mani ratnam', 'ss rajamouli', 'karan johar', 'rohit shetty', 'imtiaz ali',
-
-  // Global actors
-  'tom cruise', 'leonardo dicaprio', 'meryl streep', 'robert de niro', 'al pacino',
-  'brad pitt', 'angelina jolie', 'johnny depp', 'will smith', 'tom hanks',
-
-  // Global directors
-  'steven spielberg', 'martin scorsese', 'christopher nolan', 'quentin tarantino',
-  'james cameron', 'alfred hitchcock', 'stanley kubrick'
-];
+// Add these arrays at the top of your file
+const isGenreSearch = ['horror', 'comedy', 'adventure', 'action', 'drama', 'romance', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime', 'western', 'fiction', 'family'];
+const isLanguageSearch = ['english', 'hindi', 'bengali', 'tamil', 'telugu', 'malayalam', 'kannada', 'marathi', 'punjabi', 'gujarati', 'urdu', 'french', 'spanish', 'german', 'italian', 'japanese', 'korean', 'chinese'];
 
 updateFavoritesList()
 fetch("search.csv")
@@ -118,80 +101,41 @@ function selectSuggestion(clickedItem) {
 
 
 //code for search functionality
-
-function levenshtein(a, b) {
-  const matrix = [];
-
-  // Create the matrix
-  for (let i = 0; i <= b.length; i++) {
-    matrix[i] = [i];
-  }
-  for (let j = 0; j <= a.length; j++) {
-    matrix[0][j] = j;
-  }
-
-  // Populate the matrix
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b.charAt(i - 1) === a.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1]; // No operation
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1, // Substitution
-          Math.min(matrix[i][j - 1] + 1, // Insertion
-                     matrix[i - 1][j] + 1) // Deletion
-        );
-      }
-    }
-  }
-
-  return matrix[b.length][a.length];
-}
-
 function searchCSV(searchValue) {
   const normalizedSearchValue = searchValue.trim().toLowerCase();
-  
-  // Check if the search value is a language
-  const isLanguageSearch = ['english', 'hindi', 'bengali', 'punjabi', 'malayalam', 'telugu', 'kannada', 'marathi', 'tamil', 'urdu', 'italian', 'french', 'spanish', 'german', 'russian', 'japanese', 'korean', 'chinese', 'turkish', 'arabic', 'romanian', 'indonesian'].includes(normalizedSearchValue);
-  
-  // Check if the search value is a genre
-  const isGenreSearch = ['adventure', 'comedy', 'romance', 'action', 'drama', 'horror', 'thriller', 'sci-fi', 'fantasy', 'mystery', 'animation', 'documentary', 'biography', 'crime', 'western', 'fiction', 'family'].includes(normalizedSearchValue);
-  
-  // Check if the search value is a famous person
-  const isPersonSearch = famousPersons.includes(normalizedSearchValue);
-
-  if (isLanguageSearch) {
-    // If it's a language search, filter by language
-    return data
-      .filter(row => (row.language || '').toLowerCase() === normalizedSearchValue)
-      .slice(0, 24);
-  }
-
-  if (isGenreSearch || isPersonSearch) {
-    // If it's a genre search or person search, prioritize matching tags
-    return data
-      .filter(row => {
-        const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
-        return tags.includes(normalizedSearchValue);
-      })
-      .slice(0, 24);
-  }
-
-  // For all other searches (primarily movie titles)
   const searchTerms = normalizedSearchValue.split(/\s+/);
+  
+  const isSpecialSearch = isGenreSearch.includes(normalizedSearchValue) || isLanguageSearch.includes(normalizedSearchValue);
 
   const categorizeMatch = (row) => {
     const title = (typeof row.title === "string" ? row.title : "").toLowerCase();
+    const language = (typeof row.language === "string" ? row.language : "").toLowerCase();
     const tags = (typeof row.tags === "string" ? row.tags : "").toLowerCase();
 
-    if (title === normalizedSearchValue) return 1;
-    if (title.startsWith(normalizedSearchValue)) return 2;
-    if (title.length > 3 && Math.abs(title.length - normalizedSearchValue.length) <= 3) {
-      if (levenshtein(title, normalizedSearchValue) <= 2) return 3;
+    if (isSpecialSearch) {
+      // For genre and language searches, prioritize language and tag matches
+      if (language === normalizedSearchValue) return 1;
+      if (tags.includes(normalizedSearchValue)) return 2;
+      if (title.includes(normalizedSearchValue)) return 3;
+    } else {
+      // For other searches, use the previous prioritization
+      if (title === normalizedSearchValue) return 1;
+      if (title.startsWith(normalizedSearchValue)) return 2;
+      if (title.includes(normalizedSearchValue)) return 3;
+      if (language === normalizedSearchValue) return 4;
+      if (tags.includes(normalizedSearchValue)) return 5;
     }
-    if (searchTerms.every(term => title.includes(term))) return 4;
-    if (searchTerms.some(term => title.includes(term))) return 5;
-    if (searchTerms.some(term => tags.includes(term))) return 6;
+
+    // Common prioritization for both types of searches
+    if (language.includes(normalizedSearchValue)) return 6;
+    if (tags.includes(normalizedSearchValue)) return 7;
+    if (searchTerms.every(term => title.includes(term))) return 8;
+    if (searchTerms.every(term => language.includes(term))) return 9;
+    if (searchTerms.every(term => tags.includes(term))) return 10;
+    if (searchTerms.some(term => title.includes(term))) return 11;
+    if (searchTerms.some(term => language.includes(term))) return 12;
+    if (searchTerms.some(term => tags.includes(term))) return 13;
+
     return 0;
   };
 
